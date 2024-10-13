@@ -1,0 +1,4 @@
+# WINDOW
+
+WINW, WINH = 1200, 1200
+COLOR = (255, 0, 255)
