@@ -18,11 +18,11 @@ class PhysicsEntity:
         self.pos[0] += move[0] if movement.count(0) >= 1 else move[0]/2
         entity_rect = self.rect()
         
-        for rect in tilemap.physics_rects_around(self.pos):
-            print(f"Entity rect: {entity_rect}")
-            print(f"Tile rect: {rect}")
-            if entity_rect.colliderect(rect):
-                print("Collision detected!")
+        for rect in tilemap.physics_rects_around(self.pos):           
+            if rect.y >= entity_rect.y and (0, -1) not in [block for block in tilemap.tiles_around((rect.x, rect.y), locCheck = True)]:
+                rect.y += tilemap.tile_size/2
+            if rect.y <= entity_rect.y and (0, 1) not in [block for block in tilemap.tiles_around((rect.x, rect.y), locCheck = True)]:
+                rect.h -= tilemap.tile_size/2
             if entity_rect.colliderect(rect): # if collision occurs horizontally
                 if move[0] > 0: #moving right
                     entity_rect.right = rect.left
@@ -33,13 +33,16 @@ class PhysicsEntity:
         self.pos[1] += move[1] if movement.count(0) >= 1 else move[1]/2
         entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):
-            if entity_rect.colliderect(rect): # if collision occurs horizontally
+            if rect.y >= entity_rect.y and (0, -1) not in [block for block in tilemap.tiles_around((rect.x, rect.y), locCheck = True)]:
+                rect.y += tilemap.tile_size/2
+            if rect.y <= entity_rect.y and (0, 1) not in [block for block in tilemap.tiles_around((rect.x, rect.y), locCheck = True)]:
+                rect.h -= tilemap.tile_size/2
+            if entity_rect.colliderect(rect): # if collision occurs vertically
                 if move[1] > 0: #moving down
                     entity_rect.bottom = rect.top
                 if move[1] < 0: #moving up
                     entity_rect.top = rect.bottom
                 self.pos[1] = entity_rect.y
     
-        pygame.draw.rect(self.game.display, (255,255,255), self.rect(), 3)
     def render(self, surf):
         surf.blit(self.game.assets['player'][0], self.pos)

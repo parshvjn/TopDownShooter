@@ -1,8 +1,9 @@
-import pygame, sys
+import pygame, sys, random
 from scripts.constants import *
 from scripts.extras import *
 from scripts.entities import PhysicsEntity
 from scripts.tilemap import Tilemap
+from scripts.camera import Camera
 
 class main: # ! for the layering like if the player is behidn or in front of a wall, use the blackbox or look at clear code's project
     def __init__(self):
@@ -26,18 +27,21 @@ class main: # ! for the layering like if the player is behidn or in front of a w
         self.player = PhysicsEntity(self, 'player', (168,168), (17, 30)) # ! fix the size
 
         self.tilemap = Tilemap(self, tile_size = 30)
+        self.camera = Camera(self.tilemap)
     
     def run(self):
         while True:
             self.display.fill(COLOR)
 
-            self.tilemap.render(self.display)
+            self.camera.render(self.display, [[value, [value['pos'][0]*self.tilemap.tile_size, value['pos'][1]*self.tilemap.tile_size]] for value in self.tilemap.tilemap.values()], [[self.player, self.player.pos]])
+            print(self.player.pos)
+            # self.tilemap.render(self.display)
             
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], self.movement1[1] - self.movement1[0]))
-            self.player.render(self.display)
+            # self.player.render(self.display)
 
             # drawGrid(30, WINW, WINH, self.display, (255,255,255))
-
+            print(random.randint(1,10))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
