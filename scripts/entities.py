@@ -18,7 +18,7 @@ class PhysicsEntity:
         self.pos[0] += move[0] if movement.count(0) >= 1 else move[0]/2
         entity_rect = self.rect()
         
-        for rect in tilemap.physics_rects_around(self.pos):           
+        for rect in tilemap.physics_rects_around(self.pos):
             if rect.y >= entity_rect.y and (0, -1) not in [block for block in tilemap.tiles_around((rect.x, rect.y), locCheck = True)]:
                 rect.y += tilemap.tile_size/2
             if rect.y <= entity_rect.y and (0, 1) not in [block for block in tilemap.tiles_around((rect.x, rect.y), locCheck = True)]:
@@ -44,5 +44,5 @@ class PhysicsEntity:
                     entity_rect.top = rect.bottom
                 self.pos[1] = entity_rect.y
     
-    def render(self, surf):
-        surf.blit(self.game.assets['player'][0], self.pos)
+    def render(self, surf, offset = (0,0)):
+        surf.blit(self.game.assets['player'][0], (self.pos[0] - offset[0], self.pos[1] - offset[1]))

@@ -18,10 +18,10 @@ class Tilemap:
         tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size)) # convert pixel position to grid position
         for offset in OFFSETS:
             check_loc = str(tile_loc[0]+offset[0]) + ';' + str(tile_loc[1]+offset[1])
-            print(check_loc)
+
             if check_loc in self.tilemap: # checking if there is a surface collision and not just air around player
                 tiles.append(self.tilemap[check_loc])
-        print('-')
+
         if locCheck:
             diffs = []
             for tile in tiles:
@@ -39,12 +39,12 @@ class Tilemap:
                 rects.append(pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size, self.tile_size))
         return rects
     
-    def render(self, surf, tile):
+    def render(self, surf, tile, offset = (0, 0)):
         # for tile in self.offgrid:
-        #     surf.blit(self.game.assets[tile['type']][tile['variant']], tile['pos'])
+        #     surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))
             
         # for loc in self.tilemap:
         #     tile = self.tilemap[loc]
         #     surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size))
-        surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size))
+        surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
         
