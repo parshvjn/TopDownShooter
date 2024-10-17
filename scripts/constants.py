@@ -1,4 +1,4 @@
 # WINDOW
 
 WINW, WINH = 1200, 950
-COLOR = (255, 0, 255)
+COLOR = (255, 153, 0)

@@ -1,10 +1,12 @@
 import pygame, os
+import time
 
 BASE_IMG_PATH = 'data/images/'
 
 def load_image(path, scaleFactor = 1):
     img = pygame.image.load(BASE_IMG_PATH + path).convert() #.covert() makes it more efficient for rendering(performance)
     if scaleFactor != 1: img = pygame.transform.scale(img, (img.get_width()*scaleFactor, img.get_height()*scaleFactor))
+    img.set_colorkey((255,255,255))
     img.set_colorkey((0,0,0))
     return img
 
@@ -42,3 +44,13 @@ def drawGrid(size, ww, wh, surf, color):
         for y in range(0, wh, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
             pygame.draw.rect(surf, color, rect, 1)
+
+
+class Timer:
+    def __init__(self, timeAmount):
+        self.start_time = time.time()
+        self.amount = timeAmount
+
+    def count(self):
+        elapsed_time = time.time() - self.start_time
+        return elapsed_time>=self.amount
