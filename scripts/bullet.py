@@ -22,11 +22,13 @@ class Bullet:
         
         return [new_x, new_y]
     
-    def render(self):
-        self.surf.blit(self.assets[self.type[-1]], self.pos)
+    def render(self, offset):
+        # print(self.pos, '--')
+        self.surf.blit(self.assets[self.type[-1]], (self.pos[0] - offset[0], self.pos[1] - offset[1]))
+
         
     def update(self):
-        print(self.pos)
+        # print(self.pos, '-')
         self.pos = self.get_coordinates(self.type[1], self.dir,  self.pos[0], self.pos[1])
         # print(self.pos, self.dir, self.type[1])
 
@@ -48,9 +50,9 @@ class BulletManager:
             if self.cooltimer.count():
                 self.cooltimer = None
     
-    def render(self):
+    def render(self, offset):
         for bullet in self.bullets:
-            bullet.render()
+            bullet.render(offset)
 
     def update(self):
         for bullet in self.bullets:

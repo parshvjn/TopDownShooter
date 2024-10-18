@@ -70,7 +70,7 @@ class main: # ! for the layering like if the player is behidn or in front of a w
             
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], self.movement1[1] - self.movement1[0]))
             self.bulletManager.update()
-            self.bulletManager.render()
+            self.bulletManager.render(self.render_scroll)
             self.renderText(str(int(self.clock.get_fps())), (255, 255, 255), (10, 10))
             # print(int(self.clock.get_fps()))
             # self.player.render(self.display)
@@ -93,7 +93,7 @@ class main: # ! for the layering like if the player is behidn or in front of a w
                     elif event.key == pygame.K_b:
                         self.pHealth.damage(334)
                     elif event.key == pygame.K_SPACE:
-                        self.bulletManager.shoot([self.player.rect().centerx - self.render_scroll[0], self.player.rect().centery - self.render_scroll[1]], self.player.weapon.angle)
+                        self.bulletManager.shoot([self.player.rect().centerx, self.player.rect().centery], self.player.weapon.angle)
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = False
