@@ -5,6 +5,7 @@ from scripts.entities import PhysicsEntity
 from scripts.tilemap import Tilemap
 from scripts.camera import Camera
 from scripts.healthBar import healthBar
+from scripts.bullet import BulletManager
 
 class main: # ! for the layering like if the player is behidn or in front of a wall, use the blackbox or look at clear code's project
     def __init__(self):
@@ -30,7 +31,9 @@ class main: # ! for the layering like if the player is behidn or in front of a w
             'player/death/left':Animation(load_images('player/death/left',scaleFactor = 1.5), img_dur = 7),
             'player/death/up': Animation(load_images('player/death/up',scaleFactor = 1.5), img_dur = 7),
             'player/death/down': Animation(load_images('player/death/down',scaleFactor = 1.5), img_dur = 7),
-            'walls':load_images('walls', scaleFactor = 0.3) # 30 x 30
+            'walls':load_images('walls', scaleFactor = 0.3), # 30 x 30
+            'weapons': load_images('weapons', scaleFactor= 0.45),
+            'bullet1': load_image('bullets/Bullet.png', scaleFactor=2)
         }
 
         self.movement = [False, False]
@@ -38,11 +41,15 @@ class main: # ! for the layering like if the player is behidn or in front of a w
         
         self.player = PhysicsEntity(self, 'player', (168,168), (13*1.5, 25*1.5))
         self.pHealth = healthBar(self.player.max_heatlh, self.display, self)
+        self.bulletManager = BulletManager("single", 1, 1.5, self.display, self.assets)
 
         self.tilemap = Tilemap(self, tile_size = 30)
         self.camera = Camera(self, self.tilemap)
 
         self.scroll = [0,0]
+
+        pygame.mouse.set_visible(False)
+        pygame.event.set_grab(True)
     
     def renderText(self, tex1, color, pos, font = 30):
         font = pygame.font.Font(None, font)
@@ -62,8 +69,10 @@ class main: # ! for the layering like if the player is behidn or in front of a w
             # self.tilemap.render(self.display)
             
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], self.movement1[1] - self.movement1[0]))
+            self.bulletManager.update()
+            self.bulletManager.render()
             self.renderText(str(int(self.clock.get_fps())), (255, 255, 255), (10, 10))
-            print(int(self.clock.get_fps()))
+            # print(int(self.clock.get_fps()))
             # self.player.render(self.display)
 
             # drawGrid(30, WINW, WINH, self.display, (255,255,255))
@@ -73,24 +82,26 @@ class main: # ! for the layering like if the player is behidn or in front of a w
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = True
-                    elif event.key == pygame.K_RIGHT:
+                    elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.movement[1] = True
-                    elif event.key == pygame.K_UP:
+                    elif event.key == pygame.K_UP or event.key == pygame.K_w:
                         self.movement1[0] = True
-                    elif event.key == pygame.K_DOWN:
+                    elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.movement1[1] = True
                     elif event.key == pygame.K_b:
                         self.pHealth.damage(334)
+                    elif event.key == pygame.K_SPACE:
+                        self.bulletManager.shoot([self.player.rect().centerx - self.render_scroll[0], self.player.rect().centery - self.render_scroll[1]], self.player.weapon.angle)
                 if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = False
-                    elif event.key == pygame.K_RIGHT:
+                    elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.movement[1] = False
-                    elif event.key == pygame.K_UP:
+                    elif event.key == pygame.K_UP or event.key == pygame.K_w:
                         self.movement1[0] = False
-                    elif event.key == pygame.K_DOWN:
+                    elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.movement1[1] = False
             
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))

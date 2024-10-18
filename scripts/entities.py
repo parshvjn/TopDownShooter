@@ -1,5 +1,7 @@
 import pygame
 from scripts.extras import Timer
+from scripts.constants import *
+from scripts.weapon import Weapon
 
 class PhysicsEntity:
     def __init__(self, game, entity, pos, size):
@@ -14,11 +16,12 @@ class PhysicsEntity:
         self.set_action('idle/right')
         self.last_movement = [0,0]
         self.speed = 2
-        self.max_heatlh = 5000
-        self.health = self.max_heatlh - 2500
+        self.max_heatlh = 20000
+        self.health = self.max_heatlh - 19000
         self.timer = None
         self.damaged = False
         self.damageTimer = None
+        self.weapon = Weapon(self.game)
     
     def rect(self):
         return pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
@@ -35,7 +38,7 @@ class PhysicsEntity:
 
         move = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
 
-        self.pos[0] += move[0] if movement.count(0) >= 1 else move[0]/2
+        self.pos[0] += move[0] if movement.count(0) >= 1 else move[0]/1.5
         entity_rect = self.rect()
         
         for rect in tilemap.physics_rects_around(self.pos):
@@ -88,8 +91,8 @@ class PhysicsEntity:
 
         # health bar timers
         if self.damaged == True and self.damageTimer == None:
-            self.damageTimer = Timer(4)
-            
+            self.damageTimer = Timer(HEALAFTERDAMAGERATE)
+
         if self.damageTimer != None and self.damageTimer.count():
             del self.damageTimer
             self.damageTimer = None
@@ -100,12 +103,17 @@ class PhysicsEntity:
         
         if self.health < self.max_heatlh:
             if self.timer == None and self.damageTimer == None:
-                self.game.pHealth.heal(834)
+                self.game.pHealth.heal(int(round(self.max_heatlh/7, 0)))
                 del self.timer
-                self.timer = Timer(1.5)
+                self.timer = Timer(PASSIVEHEALRATE)
                 
             
 
     
     def render(self, surf, offset = (0,0)):
-        surf.blit(self.animation.img(), (self.pos[0] - offset[0], self.pos[1] - offset[1]))
+        if self.weapon.angle < 95 and self.weapon.angle > -90:
+            surf.blit(self.animation.img(), (self.pos[0] - offset[0], self.pos[1] - offset[1]))
+            self.weapon.render(surf, (self.rect().centerx + 7, self.rect().centery+ 10), offset)
+        else:
+            self.weapon.render(surf, (self.rect().centerx - 5, self.rect().centery+ 10), offset)
+            surf.blit(self.animation.img(), (self.pos[0] - offset[0], self.pos[1] - offset[1]))

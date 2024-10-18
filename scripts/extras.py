@@ -1,5 +1,5 @@
 import pygame, os
-import time
+import time, math
 
 BASE_IMG_PATH = 'data/images/'
 
@@ -45,6 +45,14 @@ def drawGrid(size, ww, wh, surf, color):
             rect = pygame.Rect(x, y, blockSize, blockSize)
             pygame.draw.rect(surf, color, rect, 1)
 
+def get_angle(pos1, pos2):
+    dx = pos2[0] - pos1[0]
+    dy = pos2[1] - pos1[1]
+    # print(pos1, pos2)
+    
+    angle = math.degrees(math.atan2(-dy, dx))
+    
+    return angle
 
 class Timer:
     def __init__(self, timeAmount):

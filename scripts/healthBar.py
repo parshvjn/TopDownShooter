@@ -4,7 +4,7 @@ class healthBar:
     def __init__(self, max_health, surf, game):
         self.max_health = max_health
         self.surf = surf
-        self.health = self.max_health - 2500
+        self.health = self.max_health - 19000
         self.barw = 35
         self.barh = 12
         self.game = game
